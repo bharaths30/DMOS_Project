@@ -19,7 +19,7 @@ void updateArray(int *arg)
         P(&empty[*arg]);
         // printf("Updating value of Buffer array index %d", *arg );
         buffer[*arg]++;
-        printf("Incremented value of array[%d] to %d\n", *arg, buffer[*arg]);
+        printf("Thread %d incremented the value of array[%d] to %d\n", *arg+1, *arg, buffer[*arg]);
         V(&full[*arg]);
         sleep(1);
     }
