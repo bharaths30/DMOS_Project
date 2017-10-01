@@ -18,11 +18,11 @@ node *NewItem()
 
 node *NewQueue()
 {
-	node *head    =NewItem();
-	head->payload =-1;
-	head->prev    =null;
-	head->next    =null;
-	return hdr;
+	node *head    = NewItem();
+	head->payload = -1;
+	head->prev    = head;
+	head->next    = head;
+	return head;
 }
 
 void AddQueue(node *head, node *item)
@@ -47,16 +47,16 @@ void AddQueue(node *head, node *item)
 node *DelQueue(node *head)
 {
 	//need to return head->next
-	if (head->next == null)
+	if (head->next == head)
 	{
 		perror("Queue is Empty");
 		exit(EXIT_FAILURE);
 	}
 	node *firstItem = head->next;
-	if (firstItem->next->payload == -1) //Pointing to dummy head, based on -1 payload
+	if (firstItem->next == head) //Pointing to dummy head, based on -1 payload
 	{	
-		head->prev = null;
-		head->next = null;	
+		head->prev = head;
+		head->next = head;	
 	}
 	else
 	{
