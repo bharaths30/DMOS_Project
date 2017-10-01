@@ -1,12 +1,12 @@
-#include "TCB.h"
+//#include "TCB.h"
 #include<stdlib.h>
 #include<errno.h>
 
 typedef struct node 
 {
 	int payload;
-	node *prev;
-	node *next;
+	struct node *prev;
+	struct node *next;
 } node;
 
 node *NewItem()
@@ -27,42 +27,27 @@ node *NewQueue()
 
 void AddQueue(node *head, node *item)
 {
-	if (head->prev == null)	//only the dummy element is present
-	{
-		head->prev = item;
-		head->next = item;
-		item->next = head;
-		item->prev = next;	
-	}
-	else 
-	{
-		node *curr_tail = head->prev;
-		curr_tail->next = item;
-		item->prev 	= curr_tail;
-		item->next	= head;
-		head->prev	= item;			
-	}	
+	node *curr_tail = head->prev;
+	curr_tail->next = item;
+	item->prev 	= curr_tail;
+	item->next	= head;
+	head->prev	= item;				
 }
 
 node *DelQueue(node *head)
 {
 	//need to return head->next
 	if (head->next == head)
-	{
+	{	
+		errno = EBADR;
 		perror("Queue is Empty");
 		exit(EXIT_FAILURE);
 	}
+
 	node *firstItem = head->next;
-	if (firstItem->next == head) //Pointing to dummy head, based on -1 payload
-	{	
-		head->prev = head;
-		head->next = head;	
-	}
-	else
-	{
-		head->next            = firstItem->next;
-		firstItem->next->prev = head;
-	}
+	head->next = firstItem->next;
+	firstItem->next->prev = head;
+	
 	return firstItem;
 }
 
