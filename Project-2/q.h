@@ -2,39 +2,39 @@
 #include<stdlib.h>
 #include<errno.h>
 
-typedef struct node 
+typedef struct TCB_t 
 {
-	int payload;
-	struct node *prev;
-	struct node *next;
-} node;
+	int thread_id;
+	struct TCB_t *previous;
+	struct TCB_t *next;
+} TCB_t;
 
-node *NewItem()
+TCB_t *NewItem()
 {
-	node *item_ptr;
-	item_ptr = (node *)malloc(sizeof(node));
+	TCB_t *item_ptr;
+	item_ptr = (TCB_t *)malloc(sizeof(TCB_t));
 	return item_ptr;
 }
 
-node *NewQueue()
+TCB_t *NewQueue()
 {
-	node *head    = NewItem();
-	head->payload = -1;
-	head->prev    = head;
-	head->next    = head;
+	TCB_t *head      = NewItem();
+	head->thread_id  = -1;
+	head->previous   = head;
+	head->next       = head;
 	return head;
 }
 
-void AddQueue(node *head, node *item)
+void AddQueue(TCB_t *head, TCB_t *item)
 {
-	node *curr_tail = head->prev;
-	curr_tail->next = item;
-	item->prev 	= curr_tail;
-	item->next	= head;
-	head->prev	= item;				
+	TCB_t *curr_tail = head->previous;
+	curr_tail->next  = item;
+	item->previous 	 = curr_tail;
+	item->next	 = head;
+	head->previous	 = item;				
 }
 
-node *DelQueue(node *head)
+TCB_t *DelQueue(TCB_t *head)
 {
 	//need to return head->next
 	if (head->next == head)
@@ -44,14 +44,14 @@ node *DelQueue(node *head)
 		exit(EXIT_FAILURE);
 	}
 
-	node *firstItem = head->next;
+	TCB_t *firstItem = head->next;
 	head->next = firstItem->next;
-	firstItem->next->prev = head;
+	firstItem->next->previous = head;
 	
 	return firstItem;
 }
 
-void FreeItem(node *item)
+void FreeItem(TCB_t *item)
 {
 	free(item); //Deallocate memory
 }

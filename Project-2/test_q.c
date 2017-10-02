@@ -3,19 +3,20 @@
 
 int main()
 {
-	node *hdr = NewQueue();
+	TCB_t *hdr = NewQueue();
 	int count = 3;
 	int i;
 	for (i=0; i<count; i++)
 	{
-		node *new_item = NewItem();
-		new_item->payload = i+1;
+		TCB_t *new_item = NewItem();
+		new_item->thread_id = i+1;
 		AddQueue(hdr, new_item);
 	}
 	for (i=0; i<count+1; i++)
 	{
-		node *first_item = DelQueue(hdr);
-		printf("Value: %d\n", first_item->payload);
+		TCB_t *first_item = DelQueue(hdr);
+		printf("Value: %d\n", first_item->thread_id);
+		FreeItem(first_item);
 	}
 	return 0;
 }
