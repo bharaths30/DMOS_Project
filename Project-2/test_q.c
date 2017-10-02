@@ -15,6 +15,10 @@ int main()
 	for (i=0; i<count+1; i++)
 	{
 		TCB_t *first_item = DelQueue(hdr);
+		if (first_item == NULL)
+		{
+			return -1;
+		}
 		printf("Value: %d\n", first_item->thread_id);
 		FreeItem(first_item);
 	}

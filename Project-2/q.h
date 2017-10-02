@@ -41,7 +41,8 @@ TCB_t *DelQueue(TCB_t *head)
 	{	
 		errno = EBADR;
 		perror("Queue is Empty");
-		exit(EXIT_FAILURE);
+		return NULL;
+		//exit(EXIT_FAILURE);
 	}
 
 	TCB_t *firstItem = head->next;
