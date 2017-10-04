@@ -1,13 +1,13 @@
-//#include "TCB.h"
+#include "TCB.h"
 #include<stdlib.h>
 #include<errno.h>
 
-typedef struct TCB_t 
+/*typedef struct TCB_t 
 {
 	int thread_id;
 	struct TCB_t *previous;
 	struct TCB_t *next;
-} TCB_t;
+} TCB_t;*/
 
 TCB_t *NewItem()
 {
