@@ -8,7 +8,7 @@ int threadID = 0;
 void start_thread(void *func)
 {
 	void  *stackP = malloc(stack_size);
-	TCB_t *tcb    = (TCB_t *)malloc(sizeof(TCB_t *));
+	TCB_t *tcb    = (TCB_t *)malloc(sizeof(TCB_t));
 	init_TCB(tcb, func, stackP, stack_size);
 	threadID++;
 	tcb->thread_id = threadID;
