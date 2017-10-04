@@ -13,11 +13,12 @@ void start_thread(void *func)
 	threadID++;
 	tcb->thread_id = threadID;
 	AddQueue(ReadyQ, tcb);
+	printf("Thread created\n");
 }
 
 void run()
 {
-	Curr_Thread = DelQueue(ReadyQ)
+	Curr_Thread = DelQueue(ReadyQ);
     	ucontext_t parent;     // get a place to store the main context, for faking
 	getcontext(&parent);   // magic sauce
 	swapcontext(&parent, &(Curr_Thread->context));  // start the first thread
@@ -26,7 +27,7 @@ void run()
 void yield() // similar to run
 {
 	TCB_t *Prev_Thread;
-	AddQueue(Ready_Q, Curr_Thread);
+	AddQueue(ReadyQ, Curr_Thread);
 	Prev_Thread = Curr_Thread;
    	Curr_Thread = DelQueue(ReadyQ);
    	//swap the context, from Prev_Thread to the thread pointed to Curr_Thread
