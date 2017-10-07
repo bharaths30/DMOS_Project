@@ -9,7 +9,7 @@ void function_1()
 	{
 		global++;
 		local++;
-		printf("Func 1, Global value is: %d and Local value is: %d\n", global, local);
+		printf("Func 1, Thread ID is: %d Global value is: %d and Local value is: %d\n", getThreadID(), global, local);
 		sleep(1);
 		yield();
 	}
@@ -22,7 +22,7 @@ void function_2()
         {
                 global++;
                 local++;
-                printf("Func 2, Global value is: %d and Local value is: %d\n", global, local);
+                printf("Func 2, Thread ID is: %d Global value is: %d and Local value is: %d\n", getThreadID(), global, local);
 		sleep(1);
                 yield();
         }
@@ -35,7 +35,7 @@ void function_3()
         {
                 global++;
                 local++;
-                printf("Func 3, Global value is: %d and Local value is: %d\n", global, local);
+                printf("Func 3, Thread ID is: %d Global value is: %d and Local value is: %d\n", getThreadID(), global, local);
 		sleep(1);
                 yield();
         }

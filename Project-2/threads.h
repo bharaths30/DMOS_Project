@@ -34,6 +34,11 @@ void yield() // similar to run
 	swapcontext(&(Prev_Thread->context), &(Curr_Thread->context));
 }
 
+int getThreadID()
+{
+	return Curr_Thread->thread_id;
+}
+
 void setReadyQueue()
 {
 	ReadyQ = NewQueue();
