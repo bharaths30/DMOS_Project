@@ -41,12 +41,27 @@ void function_3()
         }
 }
 
+void function_4()
+{
+        int local = 0;
+        while(1)
+        {
+                global++;
+                local++;
+                printf("Func 4, Thread ID is: %d Global value is: %d and Local value is: %d\n", getThreadID(), global, local);
+                sleep(1);
+                yield();
+        }
+}
+
 int main()
 {
 	setReadyQueue();
 	start_thread(function_1);
 	start_thread(function_2);
 	start_thread(function_3);
+	start_thread(function_4);
+	start_thread(function_4);
 	run();	
 	return 0;
 }
