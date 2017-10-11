@@ -1,3 +1,17 @@
+/*
+Assignment #2:
+Student 1: Bharath Kumar Suresh (ASU ID: 1211182086)
+Student 2: Vamsi Krishna Godavarthi (ASU ID: 1210933825) 
+
+Task:
+Contains two global variables: ReadyQ and Curr_Thread.
+ReadyQ points to a queue of TCBs and Curr_Thread points to the thread under execution (one TCB)
+
+Routines to “start thread” and “yield” and the “run” routine which cranks up the works.
+q.h needs to be included for the working of the functions
+
+*/
+
 #include "q.h"
 
 TCB_t *ReadyQ;
