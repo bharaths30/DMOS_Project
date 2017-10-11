@@ -1,3 +1,23 @@
+/*
+Assignment #2:
+Student 1: Bharath Kumar Suresh (ASU ID: 1211182086)
+Student 2: Vamsi Krishna Godavarthi (ASU ID: 1210933825)
+
+Task:
+Roll the code and light the fire.
+Remember to include threads.h which includes q.h, which includes TCB.h, which includes ucontext.h
+Write a few functions with infinite loops (put an yield in each loop).
+Start them up, from main, using start_thread
+Call run() and watch.  // note try to write thread functions that are meaningful, use global and local variables
+Call friends and family
+
+How to Compile:
+    gcc threads_test.c
+    
+How to Run:  
+    ./a.out
+
+*/
 #include "threads.h"
 
 int global = 0;
