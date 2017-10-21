@@ -62,7 +62,7 @@ void writer_entry(int ID)
 	printf("\t\t\t\t[writer: #%d]\ttrying to write\n", ID);
 	P(&mutex);
 	if (rc > 0 || wc > 0) {
-	    printf("\t\t\t\t[writer: #%d] blocking for others\n");
+	    printf("\t\t\t\t[writer: #%d] blocking for others\n", ID);
 	    wwc++;		// increment waiting writers
 	    V(&mutex);		// let go of the mutex, since i'll be
 	    // blocked
@@ -122,10 +122,11 @@ void writer(void)
 
 int main()
 {
-	setReadyQueue();
-    CreateSem(&mutex, 1);
-    CreateSem(&r_sem, 0);
-    CreateSem(&w_sem, 0);
+    setReadyQueue();
+    mutex = CreateSem(1);
+    r_sem = CreateSem(0);
+    w_sem = CreateSem(0);
+    //start_thread(writer);
     start_thread(reader);
     start_thread(reader);
     start_thread(reader);

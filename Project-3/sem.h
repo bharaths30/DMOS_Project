@@ -6,9 +6,9 @@ Student 2: Vamsi Krishna Godavarthi (ASU ID: 1210933825)
 Task:
 Implement the routines 
 
-1. Semaphonre_t CreateSem(int InputValue) mallocs a semaphore structure, initializes it to the InitValue and returns the pointer to the semaphore.
+1. Semaphore_t CreateSem(int InputValue) mallocs a semaphore structure, initializes it to the InitValue and returns the pointer to the semaphore.
 
-2. void P(Semaphonre_t *sem) takes a pointer to a semaphore and performs P, i.e. decrements the semaphore, and if the value is less than zero
+2. void P(Semaphore_t *sem) takes a pointer to a semaphore and performs P, i.e. decrements the semaphore, and if the value is less than zero
 							 then blocks the thread in the queue associated with the semaphore.
 
 3. void V(Semephore_t *sem) increments the semaphore, and if the value is 0 or negative, then takes a PCB out of the semaphore queue 
@@ -19,18 +19,21 @@ Note: The V routine also "yields" to the next runnable thread.
 
 #include "threads.h"
 
-typdef struct Semaphore {
+typedef struct semaphore_t {
 	int counter;
-	Queue *queue;
-} Semaphore_t;
+	TCB_t *queue;
+} semaphore_t;
 
-Semaphore_t CreateSem(Semaphore_t *sem,int InputValue)
+semaphore_t CreateSem(int InputValue)
 {
-	sem->queue = NewQueue(sem->queue);
+	semaphore_t *sem;
+	sem = (semaphore_t *)malloc(sizeof(semaphore_t));
+	sem->queue = NewQueue();
 	sem->counter = InputValue;
+	return *sem;
 }
 
-void P(Semaphore_t *sem)
+void P(semaphore_t *sem)
 {
 	TCB_t *previous;
 	sem->counter--;
@@ -43,7 +46,7 @@ void P(Semaphore_t *sem)
 	}
 }
 
-void V(Semaphore_t *sem)
+void V(semaphore_t *sem)
 {
 	TCB_t *next;
 	sem->counter++;
@@ -53,5 +56,5 @@ void V(Semaphore_t *sem)
 		AddQueue(ReadyQ,next);
 
 	}
-	yeild();
+	yield();
 }
