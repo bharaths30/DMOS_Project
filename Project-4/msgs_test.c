@@ -58,7 +58,7 @@ void server1()
 void server2()
 {
 	int receive_port_no = 44;
-	printf("\nServer 2 receives messages in port %d, takes each element in the array of size 10 sent and multiplies by 2 and sends it back to client", receive_port_no);
+	printf("\nServer 2 receives messages in port %d, takes each element in the array of size 10 sent and multiplies by -1 and sends it back to client", receive_port_no);
 	while(1)
 	{
 		data *rcvd_msg = (data *)malloc(sizeof(data));
@@ -72,7 +72,7 @@ void server2()
 		int i;
 		for(i=0; i<10; i++)
 		{
-			result_data->message[i] = rcvd_msg->message[i]*2;
+			result_data->message[i] = rcvd_msg->message[i]*-1;
 		}
 
 		int send_port_no = rcvd_msg->replyPortNo;
