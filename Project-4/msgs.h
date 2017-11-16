@@ -4,9 +4,14 @@
 #define SIZE_OF_MSG 10
 #define NUMBER_OF_PORTS 100
 
+typedef struct data {
+	int replyPortNo;
+	int message[SIZE_OF_MSG];	
+}data;
+
 typedef struct port {
 	int number;
-	int (*message)[SIZE_OF_MSG];
+	data *content;
 	semaphore_t empty, full, mutex;
 	int in, out;
 }port;
@@ -20,7 +25,8 @@ void init_ports()
 	for (i=0;i<NUMBER_OF_PORTS;i++)
 	{
 		ports[i].number = i;	
-		ports[i].message = (int (*)[SIZE_OF_MSG])malloc(NUMBER_OF_MSGS*sizeof(int [SIZE_OF_MSG]));
+		//ports[i].message = (int (*)[SIZE_OF_MSG])malloc(NUMBER_OF_MSGS*sizeof(int [SIZE_OF_MSG]));
+		ports[i].content = (data *)malloc(NUMBER_OF_MSGS*sizeof(data));
 		ports[i].empty = CreateSem(NUMBER_OF_MSGS);
 		ports[i].full = CreateSem(0);
 		ports[i].mutex = CreateSem(1);
@@ -29,24 +35,23 @@ void init_ports()
 	}
 }
 
-void send(int port_num, int msg[SIZE_OF_MSG])
+void send(int port_num, data *data_ptr)
 {
         P(&ports[port_num].empty);
           P(&ports[port_num].mutex);
-	    printf("\nSending message to Port %d in slot %d", port_num, ports[port_num].in);
-            //ports[port_num].message[ports[port_num].in] = msg; 
-	    memcpy(ports[port_num].message[ports[port_num].in], msg, SIZE_OF_MSG*sizeof(int));
+	    //printf("\nSending message to Port %d in slot %d", port_num, ports[port_num].in);
+	    memcpy(&ports[port_num].content[ports[port_num].in], data_ptr, sizeof(data));
 	    ports[port_num].in = (ports[port_num].in+1) % NUMBER_OF_MSGS;
           V(&ports[port_num].mutex);
         V(&ports[port_num].full);	
 }
 
-void receive(int port_num, int *msg)
+void receive(int port_num, data *msg)
 {
 	P(&ports[port_num].full);
           P(&ports[port_num].mutex);
-	    printf("\nReceiving from Port %d from slot %d", port_num, ports[port_num].out);
-	    memcpy(msg, ports[port_num].message[ports[port_num].out], SIZE_OF_MSG*sizeof(int));
+	    //printf("\nReceiving from Port %d from slot %d", port_num, ports[port_num].out);
+	    memcpy(msg, &ports[port_num].content[ports[port_num].out], sizeof(data));
             ports[port_num].out = (ports[port_num].out+1) % NUMBER_OF_MSGS;
           V(&ports[port_num].mutex);
         V(&ports[port_num].empty);	
