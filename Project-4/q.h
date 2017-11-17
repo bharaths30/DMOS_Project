@@ -60,7 +60,7 @@ TCB_t *DelQueue(TCB_t *head)
 	if (head->next == head)
 	{	
 		errno = EBADR;
-		perror("Queue is Empty");
+		perror("Queue is Empty (All threads are blocked)");
 		return NULL;
 	}
 
