@@ -43,6 +43,7 @@ int computeReceivedMessage(data *rcvd_msg)
 		if(strcmp(rcvd_msg->message,"DONE") == 0)
 		{
 			errCode = 3;
+			printf("Sending Error code 3\n");
 			return errCode;
 		}
 	}
@@ -54,7 +55,7 @@ void createFile(char *filename_client)
 	char *filename_server = (char *)malloc(strlen(filename_client)+7);
 	strcpy(filename_server, filename_client);
 	strcat(filename_server, ".server");
-	FILE *newFilePtr = fopen(filename_server, "a+");
+	FILE *newFilePtr = fopen(filename_server, "ab+");
 	fclose(newFilePtr);		
 }
 
@@ -63,7 +64,8 @@ void writeFile(char *filename_client, char *content)
         char *filename_server = (char *)malloc(strlen(filename_client)+7);
         strcpy(filename_server, filename_client);
         strcat(filename_server, ".server");
-        FILE *newFilePtr = fopen(filename_server, "a+");
+        FILE *newFilePtr = fopen(filename_server, "ab+");
+	printf("\nWriting content %s to file named %s", content, filename_server);
         fwrite(content, sizeof(char), strlen(content), newFilePtr);
 	fclose(newFilePtr);
 }
@@ -80,7 +82,8 @@ void server()
 
 	printf("\nServer recieves files on port %d",receive_port_no);
 	while(1)
-	{
+	{	
+		//printf("No. of active clients %d", noOfActiveClients);
 		data *rcvd_msg = (data *)malloc(sizeof(data));
 		receive(receive_port_no, rcvd_msg);
 		int status = computeReceivedMessage(rcvd_msg);
@@ -133,7 +136,8 @@ void server()
 							
 		}
 		else if(status == 3)
-		{
+		{	
+			//printf("\nDecreasing count of clients");
 			noOfActiveClients--;
 		}
 			
@@ -152,12 +156,13 @@ void threadExit()
 
 char* readFile_Client(char *filename)
 {
-	FILE * fp = fopen(filename, "r");
+	FILE * fp = fopen(filename, "rb");
 	fseek(fp, 0, SEEK_END);
 	long fSize = ftell(fp);
 	rewind(fp);
 	char *f_content = (char *)malloc(fSize*sizeof(char));
 	fread(f_content, sizeof(char), fSize, fp);
+	printf("\nRead from file %s the content %s", filename, f_content);
 	fclose(fp);
 	return f_content;
 }
@@ -204,6 +209,7 @@ void clientOp(int id, int send_port_no, int receive_port_no, char *fname)
 			{
 				data *requestAck = (data *)malloc(sizeof(data));
 				requestAck->message = (char *)malloc(5);
+				printf("\nClient %d sending done %s", id, fname);
 				strcpy(requestAck->message, "DONE");
 				requestAck->isFileName = false;
 				requestAck->isFileContent = false;
@@ -216,7 +222,7 @@ void clientOp(int id, int send_port_no, int receive_port_no, char *fname)
 		else if (strcmp(result->message, "MAX_REQUESTS_REACHED") == 0)
 		{
 			sleep(2);
-			//yield();
+			yield();
 		}
 	}
 	threadExit();
