@@ -22,14 +22,20 @@ it places the message in the port and returns but blocks if port is full.
 Receive (with appropriate arguments). The receive is a “blocking” receive.
 
 */
+
+#include<stdbool.h>
 #include "sem.h"
 #define NUMBER_OF_MSGS 10
-#define SIZE_OF_MSG 10
+#define SIZE_OF_MSG 1048576
 #define NUMBER_OF_PORTS 100
 
 typedef struct data {
 	int replyPortNo;
-	int message[SIZE_OF_MSG];	
+	bool isFileName;
+	bool isFileContent;
+	bool isTransferDone;
+	//char message[SIZE_OF_MSG];	
+	char *message;
 }data;
 
 typedef struct port {
