@@ -43,7 +43,6 @@ int computeReceivedMessage(data *rcvd_msg)
 		if(strcmp(rcvd_msg->message,"DONE") == 0)
 		{
 			errCode = 3;
-			printf("Sending Error code 3\n");
 			return errCode;
 		}
 	}
@@ -65,7 +64,7 @@ void writeFile(char *filename_client, char *content)
         strcpy(filename_server, filename_client);
         strcat(filename_server, ".server");
         FILE *newFilePtr = fopen(filename_server, "ab+");
-	printf("\nWriting content %s to file named %s", content, filename_server);
+	//printf("\nWriting content to file named %s", filename_server);
         fwrite(content, sizeof(char), strlen(content), newFilePtr);
 	fclose(newFilePtr);
 }
@@ -80,7 +79,7 @@ void server()
 	int receive_port_no = 0, status;
 	int noOfActiveClients = 0;
 
-	printf("\nServer recieves files on port %d",receive_port_no);
+	printf("\n\tServer recieves files on port %d",receive_port_no);
 	while(1)
 	{	
 		//printf("No. of active clients %d", noOfActiveClients);
@@ -89,6 +88,7 @@ void server()
 		int status = computeReceivedMessage(rcvd_msg);
 		if (status == -1 || status == -2)
 		{
+			printf("\n\tServer: Client %d's file transfer request failed", rcvd_msg->replyPortNo-1); 
 			if (status == -2)
 			{
 				noOfActiveClients--;
@@ -105,7 +105,7 @@ void server()
 			noOfActiveClients++;
 			createFile(rcvd_msg->message);
 
-			printf("\n File successfully created");
+			printf("\n\tServer created a file named %s.server", rcvd_msg->message);
 			data *replyMsg = (data *)malloc(sizeof(data));
                         replyMsg->message = (char *)malloc(15);
                         strcpy(replyMsg->message, "FILE_CREATED");
@@ -114,7 +114,7 @@ void server()
 		}
 		else if(status == 1 && noOfActiveClients >= 3)
 		{
-			printf("\n No. of requests exceeded");
+			printf("\n\tServer: There are already 3 clients that are currently transferring files. So the request by client %d will be blocked until server receives a message from one or more of the clients saying file transfer is done.", rcvd_msg->replyPortNo-1);
 			data *replyMsg = (data *)malloc(sizeof(data));
                         replyMsg->message = (char *)malloc(24);
                         strcpy(replyMsg->message, "MAX_REQUESTS_REACHED");
@@ -128,6 +128,7 @@ void server()
 			strcpy(w_fileName, filenameMappings[cl_id]);
 			writeFile(w_fileName, rcvd_msg->message);
 
+			printf("\n\tServer wrote content received from client %d into the file %s.server", rcvd_msg->replyPortNo-1, w_fileName);
 			data *replyMsg = (data *)malloc(sizeof(data));
                         replyMsg->message = (char *)malloc(24);
                         strcpy(replyMsg->message, "TRANSFER_COMPLETED");
@@ -136,12 +137,11 @@ void server()
 							
 		}
 		else if(status == 3)
-		{	
-			//printf("\nDecreasing count of clients");
+		{
+			printf("\n\tServer received a message from client %d saying file transfer is complete", rcvd_msg->replyPortNo-1);	
 			noOfActiveClients--;
 		}
 			
-		// write data into file
 	}
 }
 
@@ -162,7 +162,7 @@ char* readFile_Client(char *filename)
 	rewind(fp);
 	char *f_content = (char *)malloc(fSize*sizeof(char));
 	fread(f_content, sizeof(char), fSize, fp);
-	printf("\nRead from file %s the content %s", filename, f_content);
+	printf("\nFile %s is read", filename);
 	fclose(fp);
 	return f_content;
 }
@@ -180,6 +180,7 @@ void clientOp(int id, int send_port_no, int receive_port_no, char *fname)
 	strcpy(request_data->message, fname);	
 	while(1)
 	{
+		printf("\nClient %d sending a request to the server with the filename %s", id, fname);
 		send(send_port_no, request_data);
 
 		data *result = (data *)malloc(sizeof(data));
@@ -197,6 +198,7 @@ void clientOp(int id, int send_port_no, int receive_port_no, char *fname)
 			requestContentdata->isFileName = false;
 			requestContentdata->isFileContent = true;
 			//requestContentdata->isTransferDone = false;
+			printf("\nClient %d is sending the content of the file named %s to the server for processing", id, fname);
 			send(send_port_no, requestContentdata);
 			
 			data *result_transfer = (data *)malloc(sizeof(data));
@@ -209,8 +211,10 @@ void clientOp(int id, int send_port_no, int receive_port_no, char *fname)
 			{
 				data *requestAck = (data *)malloc(sizeof(data));
 				requestAck->message = (char *)malloc(5);
-				printf("\nClient %d sending done %s", id, fname);
+				
+				printf("\nClient %d is sending file transfer is done", id);
 				strcpy(requestAck->message, "DONE");
+				requestAck->replyPortNo = receive_port_no;
 				requestAck->isFileName = false;
 				requestAck->isFileContent = false;
 				requestAck->isTransferDone = true;
@@ -238,7 +242,7 @@ void client()
 	int id = currentClientID;
 	char *filename = (char *) malloc(strlen(filenameMappings[currentClientID]));
 	strcpy(filename, filenameMappings[currentClientID]);
-	printf("Client%d sends file to port %d and recieves reply on %d\n",id, send_port_no ,receive_port_no );
+	printf("\nClient %d sends file to port %d and recieves reply on %d",id, send_port_no ,receive_port_no );
 	clientOp(id, send_port_no, receive_port_no, filename);
 
 }
@@ -266,7 +270,7 @@ int main(int argc, char *argv[])
 	}
 	run();
 	while(1)
-	{
+	{	
 		sleep(1);
 	}
 
