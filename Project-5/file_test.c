@@ -1,3 +1,21 @@
+/*
+Assignment #5:
+Student 1: Bharath Kumar Suresh (ASU ID: 1211182086)
+Student 2: Vamsi Krishna Godavarthi (ASU ID: 1210933825)
+
+Task:
+For this project you are to write build clients and one server that does file transfers. 
+The clients can only upload files, and the server accepts file-name and file data from clients and writes them to files.
+
+All ports are static. The client sends a message to the server port with a “filename” (string) and the file server changes 
+that string to “filename.server”. The client then sends the file data to the server and the server writes the data to the file “filename.server”.
+
+How to Compile:
+    gcc file_test.c
+    
+How to Run:  
+    ./a.out 5 f1 f2 f3 f4 f5
+*/
 #include<stdio.h>
 #include "msgs.h"
 
